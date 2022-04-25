@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header>
+    <style>
+        .mail {
+            color: red;
+        }
+    </style>
+</header>
+<header th:fragment="header">
+    <div class="ui fixed inverted menu">
+        <a th:href="@{/}" class="header item">
+            <!--<img class="ui" th:src="@{/img/logo_flat.png}" width="104" height="24" alt="" />-->
+            <img class="ui" th:src="@{/img/logo.png}" width="156" height="32" alt="" />
+        </a>
+        <a th:href="@{/contest/index}" href="#" class="item">
+            <i class="desktop icon"></i>在线考试
+        </a>
+        <a th:if="${current_account == null}" th:onclick="'app.showLogin()'" class="item">
+            <i class="list layout icon"></i>题库中心
+        </a>
+        <a th:if="${current_account != null}" th:href="@{/problemset/list}" class="item">
+            <i class="list layout icon"></i>题库中心
+        </a>
+        <a th:if="${current_account != null}" th:href="@{/discuss/1}" class="item">
+            <i class="talk icon"></i>讨论区
+        </a>
+        <a th:if="${current_account == null}" th:onclick="'app.showLogin()'" class="item">
+            <i class="talk icon"></i>讨论区
+        </a>
+        <a th:onclick="'app.showLogin()'" class="right item" th:if="${current_account == null}">
+            <i class="sign in icon"></i>登录
+        </a>
+        <div class="ui simple dropdown right item" th:if="${current_account != null}">
+            <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+            <span th:text="${current_account.name}"></span> <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item" th:href="@{/account/profile}">
+                    <i class="user icon"></i>我的主页
+                </a>
+                <a th:href="@{/manage/login}" class="item" id="manage">
+                    <i class="sign out icon"></i>后台管理
+                </a>
+                <a th:href="@{/message/index}" class="item" id="">
+                    <i class="mail icon">1</i> 消息通知
+                </a>
+                <a class="item" id="logout">
+                    <i class="sign out icon"></i>退出
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+</html>

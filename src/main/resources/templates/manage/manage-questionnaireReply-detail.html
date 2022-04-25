@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>CTGU在线考试系统控制台-考试管理</title>
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.css}" />
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" />
+    <link th:href="@{https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/manage/manage-app.css}" />
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.css}">
+    <link rel="stylesheet" th:href="@{/css/discuss/discuss.css}" />
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/manage/manage-app.js}"></script>
+    <script type="text/javascript" th:src="@{/js/manage/manage-questionBoard.js}"></script>
+    <script type="text/javascript" th:src="@{/js/manage/manage-questionnaireBoard.js}"></script>
+    <script type="text/javascript" th:src="@{/js/questionnaire/questionnaire.js}"></script>
+    <style>
+        .ui.container {
+            padding-top: 2rem;
+        }
+
+        .ui.container[v-cloak] {
+            display: none;
+        }
+        .ques {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            width: 100%;
+        }
+
+        .ques_title {
+            padding-top: 1rem ;
+        }
+
+        .ques_opt {
+            /*margin-top: 1em;*/
+        }
+
+        #problem_list {
+            left: 50%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="ui container  center text aligined" id="main">
+    <div class="ui form">
+        <input type="hidden" />
+        <div class="ui container center text aligned">
+            <h1  class="ui header" th:text="${questionnaire.title}" id="questionnaire_detail_title"></h1>
+        </div>
+
+        <div id="questionnaire_content" class=" ui container left aligned text">
+
+        </div>
+
+    </div>
+
+
+    <div id="questionnaire">
+
+    </div>
+    <div>
+        <div class="ui form">
+
+        </div>
+    </div>
+
+
+
+</div>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.min.js}"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/fetch/0.10.1/fetch.min.js}"></script>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var content = [[${questionnaire.content}]];
+    var title = [[${questionnaire.title}]];
+    var contextPath = /*[[${#httpServletRequest.getContextPath()}]]*/;
+
+    $(function(){
+        app.init(contextPath);
+        manageQuestionnaireBoardPage.init(0, 0, 0, 0, content, title);
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

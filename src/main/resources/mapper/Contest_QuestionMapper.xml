@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctgu.dao.Contest_QuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.ctgu.model.Contest_Question" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="contest_id" property="contestId" jdbcType="INTEGER" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, contest_id, question_id, create_time, update_time
+  </sql>
+  <delete id="deleteByContestIdAndQuestionId" parameterType="java.lang.Integer" >
+    delete from t_penguin_contest_question
+    where contest_id = #{contestId,jdbcType=INTEGER}
+    and question_id = #{questionId,jdbcType=INTEGER}
+  </delete>
+  <select id="selectQuestionByContestId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select
+    question_id
+    from t_penguin_contest_question
+    where contest_id = #{contestId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_penguin_contest_question
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_penguin_contest_question
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ctgu.model.Contest_Question" >
+    insert into t_penguin_contest_question (id, contest_id, question_id, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{contestId,jdbcType=INTEGER}, #{questionId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ctgu.model.Contest_Question" >
+    insert into t_penguin_contest_question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="contestId != null" >
+        contest_id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="contestId != null" >
+        #{contestId,jdbcType=INTEGER},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ctgu.model.Contest_Question" >
+    update t_penguin_contest_question
+    <set >
+      <if test="contestId != null" >
+        contest_id = #{contestId,jdbcType=INTEGER},
+      </if>
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ctgu.model.Contest_Question" >
+    update t_penguin_contest_question
+    set contest_id = #{contestId,jdbcType=INTEGER},
+      question_id = #{questionId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

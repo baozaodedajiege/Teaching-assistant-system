@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctgu.dao.QuestionnaireMapper" >
+    <resultMap id="BaseResultMap" type="com.ctgu.model.Questionnaire" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="author_id" property="authorId" jdbcType="INTEGER" />
+        <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id,author_id,subject_id,content,title,create_time,update_time
+    </sql>
+
+    <insert id="insertQuestionnaire" parameterType="com.ctgu.model.Questionnaire" >
+        insert into t_penguin_questionnaire
+        (author_id, subject_id, content, title, create_time, update_time)
+        values (#{questionnaire.authorId}, #{questionnaire.subjectId}, #{questionnaire.content},
+        #{questionnaire.title}, now(), now())
+    </insert>
+
+    <select id="getCountBySubjectId" parameterType="int" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM t_penguin_questionnaire
+        WHERE subject_id = #{subjectId}
+    </select>
+
+    <select id="getQuestionnaireBySubjectId" resultMap="BaseResultMap" parameterType="int">
+        SELECT
+        *
+        FROM t_penguin_questionnaire
+        WHERE subject_id = #{subjectId}
+    </select>
+
+    <select id="getQuestionnaireById" resultMap="BaseResultMap" parameterType="int">
+        SELECT
+        *
+        FROM t_penguin_questionnaire
+        WHERE id = #{id}
+    </select>
+
+    <select id="getQuestionnaireByAccountId" resultMap="BaseResultMap" parameterType="int">
+        SELECT
+        *
+        FROM t_penguin_questionnaire
+        WHERE author_id = #{accountId}
+    </select>
+
+    <delete id="deleteQuestionnaireById" parameterType="int">
+        delete
+        from t_penguin_questionnaire
+        where id = #{id}
+    </delete>
+
+</mapper>

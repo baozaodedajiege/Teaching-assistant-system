@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html  lang="en">
+
+<head>
+    <title>文件上传</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        /* layout.css Style */
+
+        .upload-drop-zone {
+            height: 200px;
+            border-width: 2px;
+            margin-bottom: 20px;
+        }
+        /* skin.css Style*/
+
+        .upload-drop-zone {
+            color: #ccc;
+            border-style: dashed;
+            border-color: #ccc;
+            line-height: 200px;
+            text-align: center
+        }
+        .upload-drop-zone.drop {
+            color: #222;
+            border-color: #222;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="text-align: center;"><strong>上传文件</strong></div>
+            <div class="panel-body">
+
+                <!-- Standar Form -->
+                <h4>请选择文件</h4>
+                <form enctype="multipart/form-data" id="js-upload-form">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="file" name="files[]" id="js-upload-files" multiple>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">上传</button>
+                    </div>
+                </form>
+
+                <!-- Drop Zone -->
+                <h4>或者将文件拖拽到这里</h4>
+                <div class="upload-drop-zone" id="drop-zone">
+                    文件显示
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+    <script>
+        $(function() {
+            'use strict';
+
+            // UPLOAD CLASS DEFINITION
+            // ======================
+
+            var dropZone = document.getElementById('drop-zone');
+            var uploadForm = document.getElementById('js-upload-form');
+
+            var startUpload = function(files) {
+                var url = window.parent.location.href;
+                var arr = url.split('/');
+                console.log('/subject/api/addSyllabus/' + arr[arr.length-1]);
+                var data = new FormData();
+                data.append('file', files[0]);
+                $.ajax({
+                    url : '/subject/api/addSyllabus/' + arr[arr.length-1],
+                    type : 'POST',
+                    cache: false,
+                    data : data,
+                    // 告诉jQuery不要去处理发送的数据
+                    processData : false,
+                    // 告诉jQuery不要去设置Content-Type请求头
+                    contentType : false,
+                    beforeSend:function(){
+                        console.log("正在进行，请稍候");
+                    },
+                    success : function(res) {
+                        console.log(res);
+                        window.location.href = "/upload/html/" + res.data;
+                    },
+                    error : function(responseStr) {
+                        console.log("error");
+                    }
+                });
+            };
+            uploadForm.addEventListener('submit', function(e) {
+                var uploadFiles = document.getElementById('js-upload-files').files;
+                e.preventDefault();
+
+                startUpload(uploadFiles)
+            });
+            dropZone.ondrop = function(e) {
+                e.preventDefault();
+                this.className = 'upload-drop-zone';
+
+                startUpload(e.dataTransfer.files)
+            };
+            dropZone.ondragover = function() {
+                this.className = 'upload-drop-zone drop';
+                return false;
+            };
+            dropZone.ondragleave = function() {
+                this.className = 'upload-drop-zone';
+                return false;
+            }
+
+        }(jQuery))
+    </script>
+</body>
+
+</html>

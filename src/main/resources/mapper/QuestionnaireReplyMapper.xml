@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ctgu.dao.QuestionnaireReplyMapper" >
+    <resultMap id="BaseResultMap" type="com.ctgu.model.QuestionnaireReply" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="quest_id" property="questId" jdbcType="INTEGER" />
+        <result column="submit_id" property="submitId" jdbcType="INTEGER" />
+        <result column="html_content" property="htmlContent" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id,quest_id,submit_id,html_content,create_time,title
+    </sql>
+
+    <insert id="submitQuestionnaire" parameterType="com.ctgu.model.QuestionnaireReply" >
+        insert into t_penguin_questionnaire_reply
+        (quest_id, submit_id, html_content, create_time, title)
+        values (#{questionnaireReply.questId}, #{questionnaireReply.submitId}, #{questionnaireReply.htmlContent},
+         now(), #{questionnaireReply.title})
+    </insert>
+
+    <select id="getQuestionnairesBySubmitId" parameterType="int" resultMap="BaseResultMap">
+        select * from t_penguin_questionnaire_reply
+        where
+        submit_id = #{submitId}
+    </select>
+
+    <select id="getQuestionnairesByQuestId" parameterType="int" resultMap="BaseResultMap">
+        select * from t_penguin_questionnaire_reply
+        where
+        quest_id = #{questId}
+    </select>
+
+    <select id="getCountByQuestId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM t_penguin_questionnaire_reply
+        WHERE
+        quest_id = #{questId}
+    </select>
+
+    <select id="getQuestionnaireById" parameterType="int"  resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM t_penguin_questionnaire_reply
+        WHERE
+        id = #{id}
+    </select>
+
+</mapper>

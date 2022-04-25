@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加问卷</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.css" />
+
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.css">
+    <style>
+        .ui.container {
+            padding-top: 2rem;
+        }
+
+        .ui.container[v-cloak] {
+            display: none;
+        }
+        .ques {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            width: 100%;
+        }
+
+        .ques_title {
+            padding-top: 1rem ;
+        }
+
+        .ques_opt {
+            margin-top: 1em;
+        }
+
+        #problem_list {
+            left: 50%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="ui container" id="main">
+    <div class="ui form">
+        <div class="ui fluid input">
+            <input type="text" placeholder="问卷标题" class="ques_title">
+        </div>
+<!--        <table class="ui celled table" id="problem_list">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th colspan="3">选择题目(已选问题内容)</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--    -->
+<!--            </tbody>-->
+<!--        </table>-->
+        <div id="problem_list" class=" ui container left aligned text">
+
+        </div>
+
+    </div>
+
+    <div>
+        <button class="ui green button" onclick="addQuestion(this)" id="add_ques">添加问题</button>
+    </div>
+
+    <div id="questionnaire">
+
+    </div>
+    <div>
+        <div class="ui form">
+
+        </div>
+    </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/0.10.1/fetch.min.js"></script>
+
+<script>
+
+    var data = {};
+    var index = 0;
+    var cnt = 0;
+    var titleId = 0;
+    var title = "";
+    var content = "";
+    function addQuestion(btn) {
+        cnt = 0;
+
+        var text = '  <div>  ' +
+            '<div class="ui icon input ques">\n' +
+            '         <div class="ui label">\n' +
+            '    题目内容' +
+            '  </div> <input type="text" maxlength="60" id="title_' + (++titleId) + '"> '+ '\n' +
+            '    </div>' +
+            '</div>' +
+            '        <div> \n' +
+            '            <div class="ui icon input ques"> \n' +
+
+            '                <div class="ui label"> 选项'+ (cnt + 1) +'</div><input type="text" maxlength="60" value="" id="opt_' + (++cnt) + '">\n' +
+            '            </div>\n' +
+            '        </div>' +
+            '    <button class="ui small circular icon green button right floated" onclick="addOption(this)" id="add_opt">\n' +
+            '        <i class="add icon"></i>\n' +
+            '    </button>' +
+            '    <div>\n' +
+            '        <button class="ui green button" onclick="saveQuestion(this)">保存</button>\n' +
+            '    </div>';
+
+
+        var tar = $(btn).parent().last();
+        tar.append(text);
+        $(btn).addClass("disabled");
+    }
+
+    function addOption(btn) {
+        var text = '        <div> \n' +
+            '            <div class="ui icon input ques"> \n' +
+
+            '                <div class="ui label"> 选项'+ (cnt + 1) +'</div><input type="text" maxlength="60" value="" id="opt_' + (++cnt) + '">\n' +
+            '            </div>\n' +
+            '        </div>';
+        var parent = $(btn).parent();
+        $(btn).before(text);
+    }
+
+    function saveQuestion(btn) {
+        let opts = [];
+        let text = "";
+        for (let i = 0; i < cnt; i++) {
+            var idname = "opt_" + (i + 1);
+            var opt = $("#" + idname);
+            opts[i] = opt.val();
+        }
+        let title_id = "title_" + titleId;
+        let title_context = $("#" + title_id).val();
+
+        let addbtn = $("#add_ques");
+        $(".ques").remove();
+        $("#add_opt").remove();
+        btn.remove();
+        addbtn.removeClass("disabled");
+
+        // var p = '<tr>\n' +
+        //     '            <td class="collapsing">\n' +
+        //     '                <div class="ui checkbox">\n' +
+        //     '                    <input type="checkbox" onclick="countQuestions"><label></label>\n' +
+        //     '                </div>\n' +
+        //     '            </td>\n' +
+        //     '            <td>' + Object.keys(data)[titleId-1] + '</td>\n' +
+        //     '            <td>' + text + '</td>\n' +
+        //     '        </tr>'
+
+        let p = '<div class="grouped fields">\n' +
+            '                <h3 class="ques_title">* ' + titleId + '. ' + title_context + '</h3>\n';
+        for (let i = 0; i < cnt; i++) {
+            let name = new Date().getSeconds();
+            p += '                <div class="field">\n' +
+                '                    <div class="ui radio checkbox ques_opt">\n' +
+                '                       <input type="radio" name="' + name + '">\n' +
+                '                        <label>' + opts[i] + '</label>\n' +
+                '                    </div>\n';
+        }
+ // +
+ //            '                </div>\n' +
+ //            '                <div class="field">\n' +
+ //            '                    <div class="ui radio checkbox">\n' +
+ //            '                        <input type="radio" name="fruit">\n' +
+ //            '                        <label>Pears</label>\n' +
+ //            '                    </div>\n' +
+ //            '                </div>\n' +
+ //            '                <div class="field">\n' +
+ //            '                    <div class="ui radio checkbox">\n' +
+ //            '                        <input type="radio" name="fruit">\n' +
+ //            '                        <label>Grapefruit</label>\n' +
+ //            '                    </div>\n' +
+ //            '                </div>\n' +
+ //            '            </div>'
+
+        $("#problem_list").append(p);
+        cnt = 0;
+        content += p;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        div {
+            width: 80%;
+            height: 50000px;
+            margin: 0 auto;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            /* background-color: #777; */
+        }
+    </style>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+<div id="page">
+    <nav style="width: 100%">
+        <a th:href="@{/manage/subject/list}"><img style="width: 100px;height: 100px;"
+                src="/img/ctgu.png"/></a>
+
+    </nav>
+    <!--        <iframe src="/html/init.html"></iframe>-->
+</div>
+<script th:inline="javascript">
+    window.onload = function () {
+        var url = [[${data}]];
+        var iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.scrolling = "no";
+        // document.getElementById("page").html("<iframe src='"+ url + "'</iframe>");
+        document.getElementById("page").appendChild(iframe);
+
+        // var arr = window.location.href.split('/');
+        // var insertElement = document.createElement("p");
+        // document.getElementById("page").appendChild(insertElement);
+        // for(var i = 0; i < arr.length; i++) {
+        //     if(arr[i] === "syllabus" && i+1 < arr.length) {
+        //         // console.log('/subject/api/getSyllabus/' + arr[i+1]);
+        //         // $(".page").html("<iframe src='/subject/api/getSyllabus/"+ arr[i+1] + "'</iframe>");
+        //         var iframe = document.createElement("iframe");
+        //         iframe.src = '/html/' + arr[i+1];
+        //         document.getElementById("page").appendChild(iframe);
+        //         return ;
+        //     }
+        // }
+    };
+</script>
+</body>
+</html>

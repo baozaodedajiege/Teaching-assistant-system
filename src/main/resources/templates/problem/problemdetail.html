@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>CTGU在线考试系统</title>
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.css}" />
+    <link rel="stylesheet" th:href="@{https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <link rel="stylesheet" th:href="@{/css/problem/problemdetail.css}" />
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/app.js}"></script>
+    <script type="text/javascript" th:src="@{/js/problem/problemdetail.js}"></script>
+</head>
+<body>
+<div class="ui fixed inverted menu">
+    <a th:href="@{/}" class="header item">
+        <!--<img class="ui" th:src="@{/img/logo_flat.png}" width="104" height="24" alt="" />-->
+        <img class="ui" th:src="@{/img/logo.png}" width="156" height="32" alt="" />
+    </a>
+    <a th:href="@{/contest/index}" href="#" class="item">
+        <i class="desktop icon"></i>在线考试
+    </a>
+    <a th:if="${current_account == null}" th:onclick="'app.showLogin()'" class="item">
+        <i class="list layout icon"></i>题库中心
+    </a>
+    <a th:if="${current_account != null}" th:href="@{/problemset/list}" class="item">
+        <i class="list layout icon"></i>题库中心
+    </a>
+    <a th:if="${current_account != null}" th:href="@{/discuss/1}" class="item">
+        <i class="talk icon"></i>讨论区
+    </a>
+    <a th:if="${current_account == null}" th:onclick="'app.showLogin()'" class="item">
+        <i class="talk icon"></i>讨论区
+    </a>
+    <a th:onclick="'app.showLogin()'" class="right item" th:if="${current_account == null}">
+        <i class="sign in icon"></i>登录
+    </a>
+    <div class="ui simple dropdown right item" th:if="${current_account != null}">
+        <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+        <span th:text="${current_account.name}"></span> <i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" th:href="@{/account/profile}">
+                <i class="user icon"></i>我的主页
+            </a>
+            <a th:href="@{/manage/login}" class="item" id="manage">
+                <i class="sign out icon"></i>后台管理
+            </a>
+            <a th:href="@{/message/index}" class="item" id="">
+                <i class="mail icon">1</i> 消息通知
+            </a>
+            <a class="item" id="logout">
+                <i class="sign out icon"></i>退出
+            </a>
+        </div>
+    </div>
+</div>
+<div class="ui header container">
+    <div class="ui large breadcrumb">
+        <a class="section" th:href="@{/}"><i class="home icon"></i>首页</a>
+        <i class="right chevron icon divider"></i>
+        <a class="section" th:href="@{/problemset/list}">题库中心</a>
+        <i class="right chevron icon divider"></i>
+        <a class="section" th:href="@{'/problemset/'+${data[subject].id}+'/problems'}" th:text="${data['subject'].name}">数据结构与算法</a>
+        <i class="right chevron icon divider"></i>
+        <div class="active section" th:text="${data['question'].title}">某保险公司多年的资料表明，在索赔户中，被盗索赔户占20%，以 表示在随机抽查100个索赔户中因被盗而向保险公司索赔的户数，求 . x 0 0.5 1 1.5 2 2.5 3 Ф (x) 0.500 0.691 0.841 0.933 0.977 0.994 0.999</div>
+    </div>
+</div>
+
+<div class="ui problemDetail container">
+    <div class="ui secondary pointing menu">
+        <a class="active item"><i class="block layout icon"></i>题目详情</a>
+    </div>
+    <div class="ui grid">
+        <!-- 选择题,问答题 -->
+        <div class="ten wide column">
+            <div class="row">
+                <div class="ui stacked segment">
+                    <h4 class="ui horizontal divider header"><i class="help circle icon"></i>题目描述</h4>
+                    <p style="font-size: 16px;" th:text="${data['question'].content}">某保险公司多年的资料表明，在索赔户中，被盗索赔户占20%，以 表示在随机抽查100个索赔户中因被盗而向保险公司索赔的户数，求 . x 0 0.5 1 1.5 2 2.5 3 Ф (x) 0.500 0.691 0.841 0.933 0.977 0.994 0.999</p>
+                </div>
+            </div>
+            <!-- 选择题(单选) -->
+            <div th:if="${data['question'].questionType == 0}" class="row" style="margin-top: 1em;">
+                <div class="ui segment"><h4 th:text="'题目选项(单选)'+'('+${data[question].score}+'分)'" class="ui horizontal divider header"><i class="hashtag icon"></i>题目选项</h4>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="radio" name="questionAnswer" value="A"/>
+                        <label th:text="'A.'+${data['question'].optionA}" style="font-size: 16px;">A. 作业流</label>
+                    </div><br>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="radio" name="questionAnswer" value="A"/>
+                        <label th:text="'B.'+${data['question'].optionB}" class="row" style="font-size: 16px;">B. 子程序</label>
+                    </div><br>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="radio" name="questionAnswer" value="A"/>
+                        <label th:text="'C.'+${data['question'].optionC}" class="row" style="font-size: 16px;">B. 子程序</label>
+                    </div><br>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="radio" name="questionAnswer" value="A"/>
+                        <label th:text="'D.'+${data['question'].optionD}" class="row" style="font-size: 16px;">B. 子程序</label>
+                    </div>
+                </div>
+            </div>
+            <!-- 选择题(多选) -->
+            <div th:if="${data['question'].questionType == 1}" class="row" style="margin-top: 1em;">
+                <div class="ui segment">
+                    <h4 th:text="'题目选项(多选)'+'('+${data[question].score}+'分)'" class="ui horizontal divider header"><i class="hashtag icon"></i>题目选项</h4>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="checkbox" name="questionAnswer" value="A"/>
+                        <label th:text="'A.'+${data['question'].optionA}" style="font-size: 16px;">A. 作业流</label>
+                    </div><br>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="checkbox" name="questionAnswer" value="A"/>
+                        <label th:text="'B.'+${data['question'].optionB}" class="row" style="font-size: 16px;">B. 子程序</label>
+                    </div><br>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="checkbox" name="questionAnswer" value="A"/>
+                        <label th:text="'C.'+${data['question'].optionC}" class="row" style="font-size: 16px;">B. 子程序</label>
+                    </div><br>
+                    <div class="ui toggle checkbox" style="margin-top: 5px">
+                        <input type="checkbox" name="questionAnswer" value="A"/>
+                        <label th:text="'D.'+${data['question'].optionD}" class="row" style="font-size: 16px;">B. 子程序</label>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${data['question'].questionType == 0 or data['question'].questionType == 1}" class="row" style="margin-top: 1em;">
+                <div class="ui accordion segment">
+                    <div class="title"><i class="dropdown icon"></i>查看正确答案</div>
+                    <div class="content ui segment">
+                        <h4 class="ui dividing header">正确答案:<span th:text="${data['question'].answer}">A</span></h4>
+                        <h4 class="ui dividing header">答案解析:</h4>
+                        <p style="font-size: 16px;font-weight: bold;" th:text="${data['question'].parse}">
+                            Java虚拟机是一个可以执行Java字节码的虚拟机进程。Java源文件被编译成能被Java虚拟机执行的字节码文件。
+                            Java被设计成允许应用程序可以运行在任意的平台，而不需要程序员为每一个平台单独重写或者是重新编译。Java虚拟机让这个变为可能，因为它知道底层硬件平台的指令长度和其他特性。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${data['question'].questionType == 2}" class="row" style="margin-top: 1em;">
+                <div class="ui segment">
+                    <h4 th:text="'作答区'+'('+${data[question].score}+'分)'" class="ui dividing header">作答区</h4>
+                    <textarea  id="questionAnswer" rows="20" style="width: 100%;height: 150px;"></textarea>
+                </div>
+            </div>
+            <!-- 简答题 -->
+            <div th:if="${data['question'].questionType == 2}" class="row" style="margin-top: 1em;">
+                <div class="ui accordion segment">
+                    <div class="title"><i class="dropdown icon"></i>查看正确答案</div>
+                    <div class="content ui segment">
+                        <h4 class="ui dividing header">参考答案:</h4>
+                        <p style="font-size: 16px;font-weight: bold;" th:text="${data['question'].answer}">
+                            Java虚拟机是一个可以执行Java字节码的虚拟机进程。Java源文件被编译成能被Java虚拟机执行的字节码文件。
+                            Java被设计成允许应用程序可以运行在任意的平台，而不需要程序员为每一个平台单独重写或者是重新编译。Java虚拟机让这个变为可能，因为它知道底层硬件平台的指令长度和其他特性。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- 编程题 -->
+            <div th:if="${data['question'].questionType == 3}" class="row" style="margin-top: 1em;">
+                <div class="ui accordion segment">
+                    <div class="title"><i class="dropdown icon"></i>查看正确答案</div>
+                    <div class="content ui segment">
+                        <h4 class="ui dividing header">参考答案:</h4>
+                        <pre><code class="Java" th:text="${data['question'].answer}">import java.util.Scanner;
+public class Main {
+public static void main(String[] args){
+    Scanner scan = new Scanner(System.in);
+    while(scan.hasNext()){
+        int a = scan.nextInt();
+        int b = scan.nextInt();
+        System.out.println(String.format("%d", a + b));
+    }
+}
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+            <!-- 下一题按钮 -->
+            <div class="row" style="margin-top: 12px">
+                <form th:action="'/problemset/'+${data['subject'].id}+'/problem/'+${data['nextQuestionId']}" th:method="get">
+                    <button type="submit" th:if="${data['question'].id != data['nextQuestionId']}" class="small positive ui button" style="float: right;">下一题</button>
+                    <button type="submit" th:if="${data['question'].id == data['nextQuestionId']}" class="small disabled positive ui button" style="float: right;">最后一题</button>
+                </form>
+            </div>
+
+            <div class="ui vertical segment" style="margin-top: 50px">
+                <div class="ui comments">
+                    <h3 class="ui dividing header"><i class="comments icon"></i><span th:text="${data['count']}+'条评论'"></span></h3>
+<!--                    <h3 class="ui dividing header"><i class="comments icon"></i><span th:text="5条回帖"></span></h3>-->
+
+                    <div class="comment" th:each="item,itemStats : ${data[subjectComments]}">
+                        <a class="avatar">
+                            <img class="ui avatar image" th:src="@{'/upload/images/'+${item.avatarimgurl}}" />
+                        </a>
+                        <div class="content">
+                            <a class="author" th:text="${item.accountName}">Elliot Fu</a>
+                            <div class="metadata">
+                                <span class="date" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd HH:mm:ss')}">昨天上午12:30</span>
+                            </div>
+                            <div class="text">
+                                <p th:text="${item.content}">這對我的研究是非常有用.謝謝!</p>
+                            </div>
+<!--                            <div class="actions">-->
+<!--                                <a class="reply" th:onclick="'discussDetailPage.showReplyModal('+${itemStats.index}+',0)'">回复</a>-->
+<!--                            </div>-->
+                        </div>
+<!--                        <div class="comments">-->
+<!--                            <div class="comment" th:each="item2,itemStats2 : ${item.replies}">-->
+<!--                                <a class="avatar">-->
+<!--                                    <img class="ui avatar image" th:src="@{'/upload/images/'+${item2.user.avatarImgUrl}}" />-->
+<!--                                </a>-->
+<!--                                <div class="content">-->
+<!--                                    <a class="author" th:text="${item2.user.name}">Jenny Hess</a>-->
+<!--                                    <span th:if="${item2.atuserId != 0}">回复</span>-->
+<!--                                    <a class="author" th:if="${item2.atuserId != 0}" th:text="${item2.atuser.name}">Jenny Hess</a>-->
+<!--                                    <div class="metadata">-->
+<!--                                        <span class="date" th:text="${#dates.format(item2.createTime, 'yyyy-MM-dd HH:mm:ss')}">刚刚</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="text" th:text="${item2.content}">-->
+<!--                                        艾略特你永远是多么正确 :)-->
+<!--                                    </div>-->
+<!--                                    <div class="actions">-->
+<!--                                        <a class="reply" th:onclick="'discussDetailPage.showReplyModal('+${itemStats.index}+','+${item2.user.id}+')'">回复</a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+
+                    <!--
+                    <div class="comment">
+                        <a class="avatar">
+                            <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+                        </a>
+                        <div class="content">
+                            <a class="author">Matt</a>
+                            <div class="metadata">
+                                <span class="date">今天下午 5:42</span>
+                            </div>
+                            <div class="text">太赞了！ </div>
+                            <div class="actions">
+                                <a class="reply">Reply</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment">
+                        <a class="avatar">
+                            <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+                        </a>
+                        <div class="content">
+                            <a class="author">Elliot Fu</a>
+                            <div class="metadata">
+                                <span class="date">昨天上午12:30</span>
+                            </div>
+                            <div class="text">
+                                <p>這對我的研究是非常有用.謝謝!</p>
+                            </div>
+                            <div class="actions">
+                                <a class="reply">Reply</a>
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+                                </a>
+                                <div class="content">
+                                    <a class="author">Jenny Hess</a>
+                                    <div class="metadata">
+                                        <span class="date">刚刚</span>
+                                    </div>
+                                    <div class="text">艾略特你永远是多么正确 :) </div>
+                                    <div class="actions">
+                                        <a class="reply">Reply</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+                                </a>
+                                <div class="content">
+                                    <a class="author">Jenny Hess</a>
+                                    <span>回复</span>
+                                    <a class="author">Jenny Hess</a>
+                                    <div class="metadata">
+                                        <span class="date">刚刚</span>
+                                    </div>
+                                    <div class="text">
+                                        艾略特你永远是多么正确 :)
+                                    </div>
+                                    <div class="actions">
+                                        <a class="reply">Reply</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment">
+                        <a class="avatar">
+                            <img class="ui avatar image" th:src="@{'/upload/images/'+${current_account.avatarImgUrl}}" />
+                        </a>
+                        <div class="content">
+                            <a class="author">Joe Henderson</a>
+                            <div class="metadata">
+                                <span class="date">5 天以前</span>
+                            </div>
+                            <div class="text">老兄，这太棒了。非常感谢。 </div>
+                            <div class="actions">
+                                <a class="reply">Reply</a>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                    <form th:action="'/problemset/'+${data['subject'].id}+'/problem/'+${data['question'].id}" th:method="post" class="ui reply form">
+                        <div class="field">
+                            <textarea name="content" id="commentContent"></textarea>
+                        </div>
+                        <input name="accountId" th:value="${current_account.id}" style="display: none"></input>
+                        <button type="submit" class="small positive ui button "><i class="icon edit"></i>发表评论</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div class="one wide column">
+        </div>
+        <div class="four wide column">
+            <table class="ui table">
+                <tbody>
+                <tr>
+                    <td><span style="font-weight: bolder;">题目类型:</span></td>
+                    <td>
+                        <span th:if="${data['question'].questionType == 0}">单选题</span>
+                        <span th:if="${data['question'].questionType == 1}">多选题</span>
+                        <span th:if="${data['question'].questionType == 2}">问答题</span>
+                        <span th:if="${data['question'].questionType == 3}">编程题</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="font-weight: bolder;">上传者:</span></td>
+                    <td><span><i class="user icon"></i>admin</span></td>
+                </tr>
+                <tr>
+                    <td><span style="font-weight: bolder;">题目难度:</span></td>
+                    <td>
+                        <div th:if="${data['question'].difficulty == 1}" class="ui star rating" data-rating="1"></div>
+                        <div th:if="${data['question'].difficulty == 2}" class="ui star rating" data-rating="2"></div>
+                        <div th:if="${data['question'].difficulty == 3}" class="ui star rating" data-rating="3"></div>
+                        <div th:if="${data['question'].difficulty == 4}" class="ui star rating" data-rating="4"></div>
+                        <div th:if="${data['question'].difficulty == 5}" class="ui star rating" data-rating="5"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span style="font-weight: bolder;">发布时间:</span></td>
+                    <td><span th:text="${#dates.format(data['question'].createTime, 'yyyy-MM-dd HH:mm:ss')}">2019-01-12 15:38:25</span></td>
+                </tr>
+                <tr>
+                    <td><span style="font-weight: bolder;">更新时间:</span></td>
+                    <td><span th:text="${#dates.format(data['question'].updateTime, 'yyyy-MM-dd HH:mm:ss')}">2019-01-12 15:38:25</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="one wide column">
+        </div>
+    </div>
+</div>
+<!-- 不可抗力元素 -->
+<div class="second-footer">
+</div>
+<div th:include="footer::footer"></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+        var question = /*[[${data['question']}]]*/;
+        var contextPath = /*[[${#httpServletRequest.getContextPath()}]]*/;
+
+        $(function(){
+            app.init(contextPath);
+            problemDetailPage.init(question);
+        });
+         /*]]>*/
+</script>
+</body>
+</html>
